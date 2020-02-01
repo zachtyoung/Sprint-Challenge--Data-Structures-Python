@@ -8,17 +8,31 @@ from doubly_linked_list import DoublyLinkedList
 class RingBuffer:
     def __init__(self, capacity):
         self.capacity = capacity
-        self.current = None
+        self.current_oldest = None
         self.storage = DoublyLinkedList()
 
     def append(self, item):
         #Is the queue empty?
         #Is the queue full?
+        # If we reach the capacity of the buffer set the current pointer back to the beginning
 
-        #Is there anything in our list yet? If not add the first item
-        if self.storage.length == self.capacity:
+        #Is there anything in our list yet? If not add the first item and 
+        #capacity full case
+        if self.storage.length == self.capacity: #Yes?
+            if self.current_oldest.next is not None:
+                self.current_oldest.value = item # set value
+                self.current_oldest = self.current_oldest.next #move current_oldest
+            else:
+                self.current_oldest.value = item #set value
+                self.current_oldest = self.storage.head #set current oldnest 
 
-        else: self.storage.add_to_head(item)            
+        #capacity not full case
+        #insert item and intialize current oldest value
+        else: #No?
+            self.storage.add_to_tail(item)
+            self.current_oldest = self.storage.head    
+
+
     def get(self):
         # Note:  This is the only [] allowed
         # Loop through each item in the list and append that value to list_buffer_contents
@@ -29,9 +43,13 @@ class RingBuffer:
         # append value of node to list
         # reassign node and move to next node
 
-        return list_buffer_contents
-
-        # TODO: Your code here
+        node = self.storage.head
+        #Is there a node?
+        while node is not None:
+            #apend to list
+            list_buffer_contents.append(node.value)
+            #move node
+            node = node.next
 
         return list_buffer_contents
 
